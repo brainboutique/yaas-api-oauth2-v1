@@ -1,8 +1,78 @@
 #%RAML 0.8
-title: Authorization Service
+title: YaasApiOAuth2V1
 version: v1
 mediaType: application/json
 baseUri: https://api.eu.yaas.io/hybris/oauth2/v1
+securitySchemes:
+ - !include https://api.yaas.io/patterns/v1/security-schema-basic.yaml
+schemas:
+    -
+        userInfoClaims: |
+                {
+                  "$schema" : "http://schemas-schema.org/draft-04/schema",
+                  "type" : "object",
+                  "title" : "UserInfo Claims",
+                  "properties" : {
+                    "sub" : {
+                      "description" : "Subject - Identifier for the End-User at the Issuer",
+                      "type" : "string",
+                      "required" : true
+                    },
+                    "tenant" : {
+                      "description" : "Tenant for which End-User is authenticated (Private Claim)",
+                      "type" : "string",
+                      "required" : false
+                    }
+                  }
+                }
+    -
+        oauth2Error: |
+                {
+                  "$schema" : "http://schemas-schema.org/draft-04/schema",
+                  "type" : "object",
+                  "title" : "UserInfo Claims",
+                  "properties" : {
+                    "error" : {
+                      "description" : "Error",
+                      "type" : "string",
+                      "required" : true
+                    },
+                    "errorDescription" : {
+                      "description" : "Error description",
+                      "type" : "string",
+                      "required" : false
+                    }
+                  }
+                }
+    -
+        clientCredentialsResponse: |
+                {
+                  "$schema" : "http://schemas-schema.org/draft-04/schema",
+                  "type" : "object",
+                  "title" : "UserInfo Claims",
+                  "properties" : {
+                    "access_token" : {
+                      "description" : "",
+                      "type" : "string",
+                      "required" : true
+                    },
+                    "expires_in" : {
+                      "description" : "",
+                      "type" : "number",
+                      "required" : true
+                    },
+                    "token_type" : {
+                      "description" : "",
+                      "type" : "string",
+                      "required" : true
+                    },
+                    "traits" : {
+                      "description" : "",
+                      "type" : "string",
+                      "required" : false
+                    }
+                  }
+                }
 traits:
   - oauth2:
       usage: Apply this trait to support OAuth 2.0 authentication.
@@ -30,7 +100,7 @@ traits:
                   "status":401,
                   "message":"Authorization: Unauthorized. Bearer TOKEN is invalid",
                   "type":"insufficient_credentials",
-                  "moreInfo":"https://api.eu.yaas.io/patterns/errortypes.html"
+                  "moreInfo":"https://api.beta.yaas.io/patterns/errortypes.html"
                 }
 
               schema: |
@@ -550,13 +620,13 @@ traits:
       Examples:
       - Client Credentials grant type
       ```sh
-       curl -X POST 'https://api.eu.yaas.io/hybris/oauth2/v1/token' \
+       curl -X POST 'https://api.beta.yaas.io/hybris/oauth2/v1/token' \
        -d 'grant_type=client_credentials&client_id=CLIENT_ID&client_secret=CLIENT_SECRET&scope=scope1' \
        -H 'content-type: application/x-www-form-urlencoded'
       ```
       - Resource Owner Password Credentials grant type
       ```sh
-       curl -X POST 'https://api.eu.yaas.io/hybris/oauth2/v1/token' \
+       curl -X POST 'https://api.beta.yaas.io/hybris/oauth2/v1/token' \
        -d 'grant_type=password&client_id=CLIENT_ID&client_secret=CLIENT_SECRET&username=USERNAME&password=USER_PASSWORD&scope=scope1' \
        -H 'content-type: application/x-www-form-urlencoded'
       ```
@@ -740,7 +810,7 @@ traits:
         example: 021-9573cc7b-e623-4b81-8cb1-480edd9709e0
         required: true
       details:
-        type: string
+        type: boolean
         description: |
           When this is set to <strong>true</strong>, the response will contain additional information (e.g allowedServices field).
 
@@ -762,7 +832,7 @@ traits:
               		},
               		"scopes": {
               			"description": "This lists the scopes that the access token includes.",
-              			"type": "string"
+              			"type": "array"
               		},
               		"user": {
               			"description": "User for which token was issued.",
@@ -791,7 +861,7 @@ traits:
               		{
               			"name": "coupon",
               			"proxyUrl": [
-              				"https://api.eu.yaas.io/hybris/coupon/v1"
+              				"https://api.beta.yaas.io/hybris/coupon/v1"
               			],
               			"serviceScopes": [
               				"hybris.coupon_manage",
@@ -817,5 +887,5 @@ traits:
               {
                 "error": "invalid_query_parameter",
                 "error_description": "access_token is invalid",
-                "error_uri": "https://api.eu.yaas.io/patterns/errortypes.html"
+                "error_uri": "https://api.beta.yaas.io/patterns/errortypes.html"
               }
